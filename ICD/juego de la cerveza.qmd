@@ -9,6 +9,7 @@ format:
     scrollable: true
     theme: custom.scss
     transition: slide
+    chalkboard: true
     preview-links: auto
     background-transition: fade
     menu:
@@ -20,7 +21,6 @@ execute:
 jupyter: python3
 ---
 
-# [Introducción al Análisis de Datos]{style="color:white"} {background-image="https://media.discordapp.net/attachments/1133407137918357708/1146592106245267456/jorgeiv500_computer_science_math_data_5066e496-db38-4b02-b617-d08986372cd7.png?width=1516&height=1010"}
 
 ## Origen del Juego
 
