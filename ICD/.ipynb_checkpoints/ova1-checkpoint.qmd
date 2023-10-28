@@ -1,0 +1,962 @@
+---
+title: "Unidad 1"
+format: revealjs
+scrollable: true
+---
+
+<h1><center>Unidad 1: Análisis Exploratorio de Datos (EDA)</center></h1>
+<h2><center>OVA 1: Introducción al Análisis de Datos</center></h2>
+<center><img src="https://cdn.midjourney.com/511e8fbc-ad7c-4c06-9e6b-2465f2d1eb89/0_1.png"     
+width="300" height="200" /></center>
+
+---
+
+# 0. Conceptos básicos 👨‍🏫
+
+- **Análisis exploratorio de datos (EDA):** Es el proceso de examinar y comprender los datos antes de aplicar técnicas más avanzadas de análisis. Ayuda a descubrir patrones, identificar valores atípicos y obtener ideas iniciales sobre los datos.
+
+- **Conjunto de datos:** Es la colección de información que se utilizará para el análisis. Puede estar en forma de una tabla, archivo CSV, hoja de cálculo, etc.
+
+- **Variables:** Son las características o atributos que se registran en el conjunto de datos. Pueden ser numéricas (como edad o ingresos) o categóricas (como género o estado civil).
+
+
+---
+
+- **Estadísticas descriptivas:** Son medidas utilizadas para resumir y describir los datos. Incluyen la media, mediana, moda, desviación estándar y percentiles.
+
+- **Visualización de datos:** Es la representación gráfica de los datos. Los gráficos como histogramas, diagramas de dispersión y gráficos de barras ayudan a comprender la distribución y las relaciones entre las variables.
+
+- **Valores faltantes:** Son valores que faltan en el conjunto de datos. Es importante identificarlos y decidir si se deben eliminar, reemplazar o imputar de alguna manera.
+
+
+---
+
+- **Valores atípicos:** Son valores que difieren significativamente del resto de los datos. Pueden indicar errores en la recopilación de datos o ser puntos de datos genuinos pero inusuales. Los valores atípicos deben ser identificados y evaluados para determinar si deben ser excluidos o tratados de manera especial.
+
+- **Correlación:** Es una medida de la relación entre dos variables. Indica cómo varían juntas. La correlación puede ser positiva (ambas variables aumentan o disminuyen juntas) o negativa (una variable aumenta mientras que la otra disminuye).
+
+- **Transformación de datos:** Es el proceso de aplicar funciones matemáticas o estadísticas a los datos para cambiar su escala o distribución. Puede ser útil para normalizar los datos o reducir el sesgo.
+
+- **Conclusiones preliminares:** Son los hallazgos y observaciones iniciales derivados del análisis exploratorio de datos. Proporcionan una base para realizar análisis más profundos y formular preguntas de investigación adicionales. 
+
+---
+# 1. Carga del Conjunto de Datos ⌨️
+
+Nuestro primer paso es cargar el conjunto de datos en nuestro entorno. Para esta tarea, utilizamos la función `read_csv` de pandas, que lee un archivo CSV y lo convierte en un DataFrame de pandas, una estructura de datos bidimensional que es flexible y poderosa.
+
+```python
+import pandas as pd
+df = pd.read_csv('dataset.csv')
+```
+
+Además de `read_csv`, pandas proporciona una variedad de funciones para leer datos en diferentes formatos. Aquí hay algunos ejemplos:
+
+1. **`read_excel`:** Esta función se utiliza para leer un archivo Excel y convertirlo en un DataFrame. Es muy útil cuando los datos se almacenan en hojas de cálculo de Excel.
+\centering
+```python
+df = pd.read_excel('dataset.xlsx')
+```
+
+2. **`read_json`:** Esta función se utiliza para leer un archivo JSON. Los archivos JSON son muy comunes en la web y esta función puede ser útil cuando se trabaja con APIs.
+\centering
+```python
+df = pd.read_json('dataset.json')
+```
+
+3. **`read_sql`:** Esta función se utiliza para leer los resultados de una consulta SQL directamente en un DataFrame de pandas. Es muy útil cuando se trabaja con bases de datos.
+\centering
+```python
+from sqlalchemy import create_engine
+engine = create_engine('sqlite:///:memory:')
+df = pd.read_sql('SELECT * FROM my_table', engine)
+```
+
+4. **`read_html`:** Esta función se utiliza para leer tablas HTML directamente en un DataFrame. Es útil para el web scraping.
+\centering
+```python
+df = pd.read_html('http://www.webpage.com/sampledata.html')
+```
+
+5. **`read_clipboard`:** Esta función se utiliza para leer el contenido del portapapeles directamente en un DataFrame. Es útil para copiar y pegar datos rápidamente en un script de Python.
+\centering
+```python
+df = pd.read_clipboard()
+```
+
+Cada una de estas funciones tiene sus propios parámetros para manejar diferentes situaciones, como saltar filas, parsear fechas, especificar tipos de datos, etc. Para obtener más detalles, siempre se puede referir a la [documentación oficial de pandas](https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html).
+
+Además de la función `read_csv`, pandas ofrece una variedad de funciones para cargar diferentes tipos de conjuntos de datos. Por ejemplo, si nuestro conjunto de datos está en formato Excel, podemos usar la función `read_excel`. Si está en formato JSON, podemos usar la función `read_json`. También hay funciones para leer SQL, HTML, Stata, SAS, Google BigQuery, entre otros.
+
+```python
+# Para cargar un archivo Excel
+df = pd.read_excel('dataset.xlsx')
+
+# Para cargar un archivo JSON
+df = pd.read_json('dataset.json')
+
+# Para cargar desde una consulta SQL
+from sqlalchemy import create_engine
+engine = create_engine('sqlite:///:memory:')
+df = pd.read_sql_query("SELECT * FROM my_table;", engine)
+```
+
+Estas funciones hacen que pandas sea extremadamente versátil en términos de los tipos de conjuntos de datos que puede manejar. Independientemente del formato de nuestros datos, es probable que pandas tenga una forma de cargarlos en un DataFrame.
+
+Después de cargar nuestros datos, el siguiente paso sería explorarlos y limpiarlos si es necesario. Esto puede implicar eliminar duplicados, manejar valores faltantes, convertir tipos de datos, etc. Una vez que nuestros datos estén limpios y listos para analizar, podemos comenzar a realizar nuestra investigación.
+
+---
+
+# 2. Análisis y Resumen Estadístico 🧮
+
+Una vez que los datos están cargados, es útil obtener un resumen estadístico de los mismos. La función `describe` de pandas proporciona estadísticas descriptivas que resumen la tendencia central, la dispersión y la forma de la distribución de un conjunto de datos, excluyendo los valores `NaN`.
+
+```python
+df.describe(include='all')
+```
+El método `df.describe()` genera un resumen estadístico de las columnas. Por defecto, proporciona un resumen de las columnas numéricas. Si se incluye el parámetro `include='all'`, también proporcionará un resumen estadístico de las columnas no numéricas.
+
+El resumen estadístico proporcionado por `df.describe()` incluye:
+
+- `count`: Número total de valores no nulos en la columna.
+- `mean`: Valor medio de la columna.
+- `std`: Desviación estándar de la columna.
+- `min`: Valor mínimo en la columna.
+- `25%`: Valor del primer cuartil.
+- `50%`: Valor de la mediana o segundo cuartil.
+- `75%`: Valor del tercer cuartil.
+- `max`: Valor máximo en la columna.
+
+Para las columnas no numéricas, `df.describe()` proporciona:
+
+- `count`: Número total de valores no nulos.
+- `unique`: Número de valores únicos.
+- `top`: Valor más común.
+- `freq`: Frecuencia del valor más común.
+
+Este método es muy útil para obtener una visión rápida de los datos, especialmente en la fase de exploración inicial del análisis de datos.
+
+
+---
+
+# 3. Preprocesamiento de Datos🗑️
+
+El preprocesamiento de datos es un paso crítico en cualquier análisis de datos. Implica limpiar los datos al eliminar o llenar los valores nulos y eliminar las filas o columnas que no son necesarias para el análisis.
+
+
+
+---
+
+## 3.1. Preprocesamiento de Datos en Finanzas Computacionales
+
+El preprocesamiento de datos es un paso crítico en cualquier análisis de datos, y en particular en el campo de las finanzas computacionales. En este campo, los datos son la base de todas las decisiones que se toman.
+
+> 📍​​  *Los datos sucios o mal manejados pueden llevar a decisiones erróneas, que pueden costar millones de dólares.*
+
+> 📍​​ Por lo tanto, es esencial que cualquier científico de datos que trabaje en finanzas computacionales comprenda cómo preprocesar los datos de manera efectiva.
+
+El preprocesamiento de datos implica limpiar los datos al eliminar o llenar los valores nulos y eliminar las filas o columnas que no son necesarias para el análisis.
+
+**Por ejemplo**, si estamos analizando los precios de las acciones, es posible que tengamos datos de varias fuentes diferentes. Algunas de estas fuentes pueden tener valores nulos para ciertos días, o pueden tener errores en los datos. Es importante identificar estos problemas y tratarlos adecuadamente.
+
+El siguiente código muestra cómo podemos eliminar los valores nulos de nuestro DataFrame en Python:
+
+```python
+df_clean = df.dropna()
+```
+
+**Sin embargo,** simplemente eliminar los valores nulos puede no ser siempre la mejor solución. En algunos casos, puede ser mejor llenar estos valores con un valor predeterminado, como el valor medio, mediano o el más frecuente. Esto puede hacerse con el método `fillna()` en Python. Por ejemplo:
+
+```python
+df_clean = df.fillna(df.mean())
+```
+
+Además, en el preprocesamiento de datos, también puede ser necesario eliminar ciertas filas o columnas que no son necesarias para el análisis.
+
+Por ejemplo, si estamos analizando los precios de las acciones, es posible que no necesitemos la columna que contiene el volumen de acciones negociadas. Podemos eliminar esta columna con el método `drop()` en Python:
+
+```python
+df_clean = df.drop(['Volume'], axis=1)
+```
+---
+
+## Ejemplo
+
+Aquí tienes un ejemplo con datos ficticios utilizando un DataFrame de pandas en Python.
+Veamos un DataFrame de ejemplo que contenga algunos **valores nulos:**
+
+```python
+import pandas as pd
+import numpy as np
+
+data = {
+    'Company':['GOOG', 'MSFT', 'AAPL', 'GOOG', 'MSFT', 'AAPL', np.nan],
+    'Date':['2023-10-01', '2023-10-01', '2023-10-01', '2023-10-02', '2023-10-02', '2023-10-02', '2023-10-03'],
+    'Close Price':[1500, 200, 125, 1520, 205, 130, np.nan],
+    'Volume':[2000, 3000, 1500, 2100, 3100, 1600, np.nan]
+}
+df = pd.DataFrame(data)
+print(df)
+````
+
+---
+
+Asi es cómo se ve el DataFrame:
+
+
+
+```python
+Company        Date  Close Price  Volume
+0    GOOG  2023-10-01       1500.0  2000.0
+1    MSFT  2023-10-01        200.0  3000.0
+2    AAPL  2023-10-01        125.0  1500.0
+3    GOOG  2023-10-02       1520.0  2100.0
+4    MSFT  2023-10-02        205.0  3100.0
+5    AAPL  2023-10-02        130.0  1600.0
+6     NaN  2023-10-03          NaN     NaN
+```
+
+
+
+---
+
+Ahora, eliminamos los valores nulos:
+
+```python
+df_clean = df.dropna()
+print(df_clean)
+```
+Esto reemplazará el valor nulo en 'Close Price' y 'Volume' con la media de los valores existentes en esas columnas respectivamente.
+
+
+```python
+  Company        Date  Close Price  Volume
+0    GOOG  2023-10-01       1500.0  2000.0
+1    MSFT  2023-10-01        200.0  3000.0
+2    AAPL  2023-10-01        125.0  1500.0
+3    GOOG  2023-10-02       1520.0  2100.0
+4    MSFT  2023-10-02        205.0  3100.0
+5    AAPL  2023-10-02        130.0  1600.0
+```
+
+
+---
+
+
+Finalmente, podemos eliminar la columna 'Volume' que no necesitamos para nuestro análisis usando el método drop():
+
+
+```python
+df_clean = df.drop(['Volume'], axis=1)
+print(df_clean)
+```
+
+
+
+---
+
+Esto eliminará la última fila que tiene valores nulos.
+
+Sin embargo, en lugar de eliminar los valores nulos, podríamos llenarlos con la media de cada columna:
+
+```python
+df_clean = df.fillna(df.mean())
+print(df_clean)
+```
+
+
+```python
+  Company        Date  Close Price       Volume
+0    GOOG  2023-10-01  1500.000000  2000.000000
+1    MSFT  2023-10-01   200.000000  3000.000000
+2    AAPL  2023-10-01   125.000000  1500.000000
+3    GOOG  2023-10-02  1520.000000  2100.000000
+4    MSFT  2023-10-02   205.000000  3100.000000
+5    AAPL  2023-10-02   130.000000  1600.000000
+6     NaN  2023-10-03   613.333333  2216.666667
+<ipython-input-3-5cee832ebd15>:1: FutureWarning: The default value of numeric_only in DataFrame.mean is deprecated. In a future version, it will default to False. In addition, specifying 'numeric_only=None' is deprecated. Select only valid columns or specify the value of numeric_only to silence this warning.
+  df_clean = df.fillna(df.mean())
+```
+
+
+
+
+---
+
+## 3.2. Funciones 👨‍💻
+
+...para preprocesamiento y manipulacion
+
+
+---
+
+### 3.2.1. Manipulación de Datos
+
+La manipulación de datos es otra tarea común en el análisis de datos. Esto puede incluir cambiar el nombre de las columnas, reordenar las columnas, etc. Para cambiar el nombre de las columnas, usamos la función `rename`, y para reordenar las columnas, simplemente seleccionamos las columnas en el orden que deseamos.
+
+```python
+df.rename(columns={'old_name': 'new_name'}, inplace=True)
+df = df[['col1', 'col2', 'col3']]
+```
+
+
+---
+
+El código realiza dos operaciones en un DataFrame:
+
+- **Renombrar columnas:** df.rename(columns={'old_name': 'new_name'}, inplace=True) cambia el nombre de la columna 'old_name' a 'new_name'. Después de esta operación, la columna que se llamaba 'old_name' ahora se llamará 'new_name'.
+
+- **Reordenar columnas:** df = df[['col1', 'col2', 'col3']] esto reordena las columnas del DataFrame a 'col1', 'col2', 'col3' en ese orden. Después de esta operación, la primera columna del DataFrame será 'col1', la segunda columna será 'col2', y la tercera columna será 'col3'.
+
+
+
+
+---
+
+Aquí vemos una representación gráfica de estas operaciones:
+
+
+Inicialmente, el DataFrame podría verse así:
+
+| col1 | old_name | col3 | col4 |
+|------|----------|------|------|
+| ...  | ...      | ...  | ...  |
+
+Después de renombrar la columna 'old_name' a 'new_name' con el código `df.rename(columns={'old_name': 'new_name'}, inplace=True)`, tu DataFrame se vería así:
+
+| col1 | new_name | col3 | col4 |
+|------|----------|------|------|
+| ...  | ...      | ...  | ...  |
+
+A continuación, reordenando las columnas con el código `df = df[['col1', 'col2', 'col3']]`, tu DataFrame cambiaría a esto:
+
+| col1 | col2 | col3 |
+|------|------|------|
+| ...  | ...  | ...  |
+
+---
+
+### Ejemplo
+
+Ejemplo con datos ficticios de acciones:
+
+Supón que tienes el siguiente DataFrame que representa los precios de cierre y el volumen de acciones negociadas para algunas empresas tech en fechas específicas:
+
+
+
+Tu DataFrame original se vería así:
+
+| Company | Date       | Old_Close_Price | Volume |
+|---------|------------|-----------------|--------|
+| GOOG    | 2023-10-01 | 1500            | 2000   |
+| MSFT    | 2023-10-01 | 200             | 3000   |
+| AAPL    | 2023-10-01 | 125             | 1500   |
+| GOOG    | 2023-10-02 | 1520            | 2100   |
+| MSFT    | 2023-10-02 | 205             | 3100   |
+| AAPL    | 2023-10-02 | 130             | 1600   |
+
+Si renombras la columna 'Old_Close_Price' a 'Close_Price' con el código `df.rename(columns={'Old_Close_Price': 'Close_Price'}, inplace=True)`, tu DataFrame se vería así:
+
+| Company | Date       | Close_Price | Volume |
+|---------|------------|-------------|--------|
+| GOOG    | 2023-10-01 | 1500        | 2000   |
+| MSFT    | 2023-10-01 | 200         | 3000   |
+| AAPL    | 2023-10-01 | 125         | 1500   |
+| GOOG    | 2023-10-02 | 1520        | 2100   |
+| MSFT    | 2023-10-02 | 205         | 3100   |
+| AAPL    | 2023-10-02 | 130         | 1600   |
+
+Finalmente, si reordenas las columnas a 'Company', 'Close_Price', y 'Date' con el código `df = df[['Company', 'Close_Price', 'Date']]`, tu DataFrame cambiaría a esto:
+
+| Company | Close_Price | Date       |
+|---------|-------------|------------|
+| GOOG    | 1500        | 2023-10-01 |
+| MSFT    | 200         | 2023-10-01 |
+| AAPL    | 125         | 2023-10-01 |
+| GOOG    | 1520        | 2023-10-02 |
+| MSFT    | 205         | 2023-10-02 |
+| AAPL    | 130         | 2023-10-02 |
+
+---
+
+
+### 3.2.2. Data Wrangling
+
+Data wrangling o munging es el proceso de convertir los datos del formato inicial a un formato que puede ser mejor analizado. Esto puede implicar convertir los tipos de datos, ordenar los datos, etc. Para convertir los tipos de datos, usamos la función `astype` y para ordenar los datos, usamos la función `sort_values`.
+
+```python
+df['column'] = df['column'].astype('type')
+df.sort_values(by='column', ascending=True)
+```
+
+
+
+
+---
+
+### Ejemplo
+
+Supongamos que tienes el siguiente DataFrame que representa los precios de cierre y el volumen de acciones negociadas para algunas empresas tech en fechas específicas:
+
+```python
+import pandas as pd
+
+data = {
+    'Company':['GOOG', 'MSFT', 'AAPL', 'GOOG', 'MSFT', 'AAPL'],
+    'Date':['2023-10-01', '2023-10-01', '2023-10-01', '2023-10-02', '2023-10-02', '2023-10-02'],
+    'Close_Price':['1500', '200', '125', '1520', '205', '130'], # Los precios están en formato string
+    'Volume':[2000, 3000, 1500, 2100, 3100, 1600]
+}
+
+df = pd.DataFrame(data)
+```
+
+El DataFrame original se ve así:
+
+| Company | Date       | Close_Price | Volume |
+|---------|------------|-------------|--------|
+| GOOG    | 2023-10-01 | "1500"      | 2000   |
+| MSFT    | 2023-10-01 | "200"       | 3000   |
+| AAPL    | 2023-10-01 | "125"       | 1500   |
+| GOOG    | 2023-10-02 | "1520"      | 2100   |
+| MSFT    | 2023-10-02 | "205"       | 3100   |
+| AAPL    | 2023-10-02 | "130"       | 1600   |
+
+Observa que los precios de cierre (`Close_Price`) están en formato string. Para facilitar los análisis futuros, podría ser útil convertir estos valores a números. Podemos hacerlo utilizando la función `astype`:
+
+```python
+df['Close_Price'] = df['Close_Price'].astype('int')
+```
+
+Después de convertir los tipos de datos, el DataFrame se ve así:
+
+| Company | Date       | Close_Price | Volume |
+|---------|------------|-------------|--------|
+| GOOG    | 2023-10-01 | 1500        | 2000   |
+| MSFT    | 2023-10-01 | 200        | 3000   |
+| AAPL    | 2023-10-01 | 125         | 1500   |
+| GOOG    | 2023-10-02 | 1520        | 2100   |
+| MSFT    | 2023-10-02 | 205         | 3100   |
+| AAPL    | 2023-10-02 | 130         | 1600   |
+
+A continuación, podrías querer ordenar los datos por precio de cierre en orden ascendente. Esto se puede hacer utilizando la función `sort_values`:
+
+```python
+df = df.sort_values(by='Close_Price', ascending=True)
+```
+
+Después de ordenar los datos, el DataFrame se ve así:
+
+| Company | Date       | Close_Price | Volume |
+|---------|------------|-------------|--------|
+| AAPL    | 2023-10-01 | 125         | 1500   |
+| AAPL    | 2023-10-02 | 130         | 1600   |
+| MSFT    | 2023-10-01 | 200         | 3000   |
+| MSFT    | 2023-10-02 | 205         | 3100   |
+| GOOG    | 2023-10-01 | 1500        | 2000   |
+| GOOG    | 2023-10-02 | 1520        | 2100   |
+
+Espero que esto te dé una buena idea de cómo se pueden usar `astype` y `sort_values` en el proceso de data wrangling.
+
+---
+
+### 3.2.3. Agregación de Datos por Categoría
+
+La agregación de datos es un proceso en el que recopilamos y presentamos los datos de manera resumida para obtener información adicional. Esto implica agrupar los datos en función de ciertas categorías y realizar operaciones en estos grupos. Para agrupar los datos, usamos la función `groupby`.
+
+```python
+df_grouped = df.groupby('column')
+df_grouped.sum()
+```
+
+
+---
+
+
+###3.2.4. Concatenar y Apendizar Data Sets
+
+A veces, es posible que tengamos datos distribuidos en varios DataFrames. Podemos concatenar estos DataFrames en uno solo usando la función `concat`.
+
+```python
+df_concat = pd.concat([df_white, df_red])
+```
+----------------------------------------
+
+---
+
+
+###3.2.5. Joins de Datasets
+
+Finalmente, podemos combinar dos DataFrames basándonos en una columna común utilizando la función `merge`. Hay varios tipos de joins como inner join, left join, right join y outer join.
+
+```python
+df_merged = pd.merge(df1, df2, on='key', how='inner')
+```
+
+
+
+---
+
+
+### 3.2.6. Eliminación de valores nulos
+
+La función `dropna()` se utiliza para eliminar los valores nulos (NaN) de un DataFrame. El DataFrame resultante, `df_clean`, no contendrá ninguna fila que tuviera al menos un valor nulo.
+
+```python
+df_clean = df.dropna()
+```
+
+
+
+---
+
+### 3.2.7 Renombrar y reordenar columnas
+
+La función `rename()` se utiliza para cambiar el nombre de las columnas. En este caso, cambiamos el nombre de la columna 'old_name' a 'new_name'. El argumento `inplace=True` realiza los cambios en el DataFrame original.
+
+La reordenación de las columnas se realiza simplemente seleccionando las columnas en el orden deseado.
+
+```python
+df.rename(columns={'old_name': 'new_name'}, inplace=True)
+df = df[['col1', 'col2', 'col3']]
+```
+
+
+---
+
+### 3.2.8. Conversión de tipos de datos y ordenación
+
+La función `astype()` se utiliza para convertir los tipos de datos de las columnas. Aquí, estamos cambiando el tipo de datos de la columna 'column' a 'type'.
+
+La función `sort_values()` se utiliza para ordenar los valores de una columna. En este caso, estamos ordenando los datos por la columna 'column' en orden ascendente.
+
+```python
+df['column'] = df['column'].astype('type')
+df.sort_values(by='column', ascending=True)
+```
+
+
+---
+
+### 3.2.9. Concatenación de DataFrames
+
+La función `concat()` se utiliza para concatenar dos o más DataFrames en uno solo. Aquí, estamos concatenando los DataFrames `df_white` y `df_red`.
+
+```python
+df_concat = pd.concat([df_white, df_red])
+```
+
+
+---
+
+
+
+---------------------------------------
+
+🐍 Estas son algunas de las funciones más comunes que se utilizan en el preprocesamiento y la manipulación de datos en pandas. Practicar con estas funciones te ayudará a adquirir habilidades sólidas en el manejo de datos en Python.🐍
+
+--------------------------
+
+[Volver al Menú](#Menú)
+
+---
+
+## 4. Visualización
+
+La visualización de datos es una parte importante del análisis de datos. Nos ayuda a entender los patrones, tendencias y relaciones entre diferentes variables en nuestros datos.
+
+La biblioteca matplotlib en Python es una herramienta poderosa para la visualización de datos. Aquí se muestran algunos ejemplos de cómo visualizar datos en Python.
+
+```python
+import matplotlib.pyplot as plt
+```
+
+**Histograma:**
+Un histograma es una representación gráfica que organiza un grupo de datos en una serie de intervalos. Es útil para entender la distribución de los datos.
+
+```python
+df['column'].hist(bins=10)
+plt.show()
+```
+
+**Boxplot:**
+Un boxplot es una forma estandarizada de representar la distribución de los datos basada en un resumen de cinco números (“mínimo”, primer cuartil (Q1), mediana, tercer cuartil (Q3) y “máximo”).
+
+```python
+df.boxplot(column='column')
+plt.show()
+```
+
+**Gráfico de dispersión:**
+Un gráfico de dispersión utiliza puntos cartesianos para mostrar los valores de dos variables numéricas, lo que permite observar la correlación entre las variables.
+
+```python
+plt.scatter(df['column1'], df['column2'])
+plt.show()
+```
+
+**Gráfico de barras:**
+Un gráfico de barras es útil para comparar cantidades de diferentes categorías.
+
+```python
+df['column'].value_counts().plot.bar()
+plt.show()
+```
+
+**Correlación:**
+La correlación es una medida de la relación entre dos variables. Podemos usar el método `corr` para calcular la correlación entre todas las columnas numéricas en el DataFrame.
+
+```python
+correlation = df.corr()
+```
+
+**Heatmap:**
+Un mapa de calor es una forma de visualizar la matriz de correlación, donde los colores representan los valores de correlación entre las variables.
+
+```python
+import seaborn as sns
+sns.heatmap(correlation)
+plt.show()
+```
+
+Estas son solo algunas de las muchas formas en que puedes visualizar tus datos en Python.
+
+> 🚨 La elección de las visualizaciones dependerá de tu conjunto de datos y de las preguntas que estés tratando de responder.
+
+-----------------------------
+
+[Volver al Menú](#Menú)
+
+---
+
+# 5. Ejemplo A
+
+Con la intención de proveer un desarrollo paso a paso, trabajaremos con un conjunto que se encuentra a su disposición. Nuestro conjunto se llama ***credito.csv:***
+
+## 5.1. Descripción General
+
+El conjunto de datos ha sido adaptado al contexto colombiano y traducido al español, facilitando así su análisis en este entorno específico.
+
+**Columnas del Conjunto de Datos**
+
+- **Ingresos**: Representa los ingresos de los individuos en miles de dólares.
+- **Limite_Credito**: El límite de crédito en dólares asignado a los individuos.
+- **Calificacion**: La calificación crediticia de los individuos.
+- **Tarjetas**: El número de tarjetas de crédito que tienen los individuos.
+- **Edad**: La edad de los individuos en años.
+- **Educacion**: El nivel educativo de los individuos, medido en años de educación formal.
+- **Propietario**: Indica si los individuos son propietarios de una casa (Sí/No).
+- **Estudiante**: Indica si los individuos son estudiantes (Sí/No).
+- **Casado**: Indica el estado civil de los individuos (Sí/No).
+- **Region**: La región geográfica de Colombia en la que residen los individuos. Las opciones incluyen 'Andina', 'Caribe', 'Pacífica', 'Orinoquía', y 'Amazonía'.
+- **Saldo**: El saldo actual en las cuentas de los individuos en dólares.
+
+**Datos Faltantes**
+
+Para simular una situación más realista, se han insertado valores nulos en un 5% de las entradas para las columnas 'Ingresos', 'Limite_Credito', 'Calificacion', y 'Saldo'.
+
+**Recomendaciones**
+
+Se recomienda realizar una limpieza y un preprocesamiento adecuado de los datos antes de utilizarlos para cualquier análisis o modelado posterior.
+
+Vamos a importar los datos.
+Utilizaremos pandas para importar los datos y `df.head()` para leer el conjunto.
+
+---
+
+## Carga de datos
+
+---
+
+```python
+import pandas as pd
+
+df_credito=pd.read_csv('credito.csv')
+df_credito.head()
+```
+
+---
+
+## Resumen Estadístico
+
+Una vez que hemos importado los datos, el siguiente paso es obtener un resumen estadístico para entender las características numéricas del conjunto de datos. Esto incluye medidas como la media, la mediana, la desviación estándar, entre otros.
+
+---
+
+```python
+estadisticas = df_credito.describe(include='all')
+estadisticas
+```
+
+---
+
+## Resumen Estadístico del Conjunto de Datos
+
+### Variables Numéricas
+
+- Ingresos: Varía entre 10.35 y 186.63 con una media de aproximadamente 44.68.
+- Limite_Credito: Rango entre 855 y 13,913, con una media de aproximadamente 4,739.
+- Calificacion: Varía entre 93 y 982, con una media de aproximadamente 357.
+- Tarjetas: Varía entre 1 y 9 tarjetas, con una media de aproximadamente 2.96.
+- Edad: Rango de edad entre 23 y 98 años, con una media de aproximadamente 55.67.
+- Educacion: Nivel de educación varía entre 5 y 20, con una media de aproximadamente 13.45.
+- Saldo: Varía entre 0 y 1,999, con una media de aproximadamente 522.46.
+
+### Variables Categóricas
+
+- Propietario: Dos categorías, siendo la más frecuente "Sí".
+- Estudiante: Dos categorías, siendo la más frecuente "No".
+- Casado: Dos categorías, siendo la más frecuente "Sí".
+- Región: Cinco categorías diferentes, siendo la más frecuente "Pacífica".
+
+El siguiente paso es el preprocesamiento de los datos, que incluirá la eliminación de valores nulos y vacíos. Vamos a ello.
+
+---
+
+## Preprocesamiento de datos:
+
+Una vez que hemos importado los datos, el siguiente paso es obtener un resumen estadístico para entender las características numéricas del conjunto de datos. Esto incluye medidas como la media, la mediana, la desviación estándar, entre otros.
+
+---
+
+```python
+# Identificar columnas con valores nulos
+valores_faltantes = df_credito.isnull().sum()
+valores_faltantes
+
+```
+
+---
+
+Tenemos valores faltantes en varias columnas:
+
+* Ingresos: 20 valores faltantes
+* Limite_Credito: 20 valores faltantes
+* Calificacion: 20 valores faltantes
+* Saldo: 20 valores faltantes
+
+vamos a eliminarlas:
+
+---
+
+```python
+# Eliminar filas con valores nulos
+df_limpio = df_credito.dropna()
+
+# Verificar que se han eliminado todos los valores nulos
+valores_faltantes_limpio = df_limpio.isnull().sum()
+valores_faltantes_limpio, df_limpio.shape
+
+```
+
+---
+
+## 4. Visualización
+
+---
+
+Una forma es usar matplotlib.
+
+---
+
+```python
+import matplotlib.pyplot as plt
+df_new=df_limpio
+# Creando subplots
+fig, axes = plt.subplots(nrows=3, ncols=2, figsize=(14, 12))
+
+# Gráfico de barras para 'Propietario'
+prop_counts = df_new['Propietario'].value_counts()
+axes[0, 0].bar(prop_counts.index, prop_counts.values, color='b', alpha=0.7, label='Propietario')
+axes[0, 0].set_title('Distribución de Propietarios y No Propietarios')
+axes[0, 0].set_xlabel('Propietario')
+axes[0, 0].set_ylabel('Cantidad')
+
+# Gráfico de barras para 'Estudiante'
+est_counts = df_new['Estudiante'].value_counts()
+axes[0, 1].bar(est_counts.index, est_counts.values, color='g', alpha=0.7, label='Estudiante')
+axes[0, 1].set_title('Distribución de Estudiantes y No Estudiantes')
+axes[0, 1].set_xlabel('Estudiante')
+axes[0, 1].set_ylabel('Cantidad')
+
+# Gráfico de barras para 'Casado'
+cas_counts = df_new['Casado'].value_counts()
+axes[1, 0].bar(cas_counts.index, cas_counts.values, color='r', alpha=0.7, label='Casado')
+axes[1, 0].set_title('Distribución de Casados y Solteros')
+axes[1, 0].set_xlabel('Casado')
+axes[1, 0].set_ylabel('Cantidad')
+
+# Gráfico de barras para 'Region'
+reg_counts = df_new['Region'].value_counts()
+axes[1, 1].bar(reg_counts.index, reg_counts.values, color='m', alpha=0.7, label='Region')
+axes[1, 1].set_title('Distribución por Región')
+axes[1, 1].set_xlabel('Región')
+axes[1, 1].set_ylabel('Cantidad')
+
+# Histograma para 'Ingresos'
+axes[2, 0].hist(df_new['Ingresos'].dropna(), bins=20, color='c', alpha=0.7, label='Ingresos')
+axes[2, 0].set_title('Distribución de Ingresos')
+axes[2, 0].set_xlabel('Ingresos')
+axes[2, 0].set_ylabel('Frecuencia')
+
+# Histograma para 'Limite_Credito'
+axes[2, 1].hist(df_new['Limite_Credito'].dropna(), bins=20, color='y', alpha=0.7, label='Limite_Credito')
+axes[2, 1].set_title('Distribución de Límite de Crédito')
+axes[2, 1].set_xlabel('Límite de Crédito')
+axes[2, 1].set_ylabel('Frecuencia')
+
+# Ajustando la disposición
+plt.tight_layout()
+plt.show()
+
+```
+
+---
+
+```python
+import seaborn as sns
+
+# Configurando el estilo de los gráficos
+sns.set(style="whitegrid")
+
+# Creando subplots
+fig, axes = plt.subplots(nrows=3, ncols=2, figsize=(14, 12))
+
+# Gráfico de barras para 'Propietario'
+sns.countplot(x='Propietario', data=df_new, ax=axes[0, 0])
+axes[0, 0].set_title('Distribución de Propietarios y No Propietarios')
+
+# Gráfico de barras para 'Estudiante'
+sns.countplot(x='Estudiante', data=df_new, ax=axes[0, 1])
+axes[0, 1].set_title('Distribución de Estudiantes y No Estudiantes')
+
+# Gráfico de barras para 'Casado'
+sns.countplot(x='Casado', data=df_new, ax=axes[1, 0])
+axes[1, 0].set_title('Distribución de Casados y Solteros')
+
+# Gráfico de barras para 'Region'
+sns.countplot(x='Region', data=df_new, ax=axes[1, 1])
+axes[1, 1].set_title('Distribución por Región')
+
+# Histograma para 'Ingresos'
+sns.histplot(df_new['Ingresos'], kde=True, ax=axes[2, 0])
+axes[2, 0].set_title('Distribución de Ingresos')
+
+# Histograma para 'Limite_Credito'
+sns.histplot(df_new['Limite_Credito'], kde=True, ax=axes[2, 1])
+axes[2, 1].set_title('Distribución de Límite de Crédito')
+
+# Ajustando la disposición
+plt.tight_layout()
+plt.show()
+
+```
+
+---
+
+## Análisis Exploratorio de Datos (EDA) - Visualizaciones
+
+### Distribución de Propietarios y No Propietarios
+
+La mayoría de las personas en el conjunto de datos no son propietarias de una casa.
+
+### Distribución de Estudiantes y No Estudiantes
+
+La mayoría de las personas en el conjunto de datos no son estudiantes.
+
+### Distribución de Casados y Solteros
+
+La mayoría de las personas en el conjunto de datos están casadas.
+
+### Distribución por Región
+
+La distribución de individuos entre las diferentes regiones de Colombia parece ser aproximadamente uniforme.
+
+### Distribución de Ingresos
+
+Los ingresos están distribuidos en su mayoría en el rango inferior, con algunos outliers en el extremo superior.
+
+### Distribución de Límite de Crédito
+
+Similar a los ingresos, el límite de crédito también está en su mayoría distribuido en el rango inferior, con algunos outliers en el extremo superior.
+
+---
+
+```python
+# Boxplot para 'Ingresos' agrupado por 'Estudiante' usando Matplotlib
+plt.figure(figsize=(8, 6))
+data_to_plot = [df_new[df_new['Estudiante'] == 'Si']['Ingresos'].dropna(),
+                df_new[df_new['Estudiante'] == 'No']['Ingresos'].dropna()]
+
+plt.boxplot(data_to_plot, labels=['Estudiante', 'No Estudiante'], vert=True, patch_artist=True)
+plt.title('Boxplot de Ingresos Agrupado por Estudiante')
+plt.xlabel('Estado del Estudiante')
+plt.ylabel('Ingresos (Miles de dólares)')
+plt.show()
+
+```
+
+---
+
+### Boxplot de Ingresos Agrupado por Estado de Estudiante
+
+Esta gráfica muestra la distribución de ingresos separada por si el individuo es estudiante o no. Se observan diferencias notables en la distribución de ingresos entre los dos grupos:
+
+- Estudiantes: Los ingresos de los estudiantes están concentrados en un rango mucho más bajo en comparación con los no estudiantes. Sin embargo, hay algunos valores atípicos que son considerablemente altos.
+
+- No Estudiantes: La distribución de ingresos para los no estudiantes es más amplia y también presenta valores atípicos en el extremo superior.
+
+Esto podría sugerir que, aunque los estudiantes tienden a tener ingresos más bajos, hay excepciones en las que algunos estudiantes tienen ingresos significativamente altos.
+
+---
+
+```python
+# Calculando la matriz de correlación
+correlation_matrix = df_new.corr()
+
+# Creando un heatmap para visualizar la matriz de correlación
+plt.figure(figsize=(12, 8))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
+plt.title('Heatmap de Correlación entre Variables Numéricas')
+plt.show()
+
+```
+
+---
+
+## Heatmap de Correlación entre Variables Numéricas
+El mapa de calor muestra la correlación entre las variables numéricas del conjunto de datos. Aquí hay algunas observaciones clave:
+
+- Ingresos y Límite de Crédito: Hay una fuerte correlación positiva (0.79) entre los ingresos y el límite de crédito, lo cual es esperable, ya que las personas con mayores ingresos suelen tener un mayor límite de crédito.
+
+- Calificación y Límite de Crédito: También hay una fuerte correlación positiva (0.99) entre la calificación y el límite de crédito. Esto sugiere que un límite de crédito más alto suele estar asociado con una mejor calificación crediticia.
+
+- Saldo y Límite de Crédito: Existe una correlación positiva moderada (0.51) entre el saldo y el límite de crédito.
+
+- Edad y Tarjetas: Hay una correlación positiva moderada (0.45) entre la edad y el número de tarjetas de crédito, lo cual podría indicar que las personas mayores tienden a tener más tarjetas de crédito.
+
+El resto de las correlaciones son relativamente bajas, lo que sugiere que esas variables no están fuertemente relacionadas entre sí.
+
+---
+
+### Conclusión del Análisis Exploratorio de Datos (EDA)
+
+El Análisis Exploratorio de Datos en este conjunto, adaptado al contexto colombiano y traducido al español, ha revelado varias observaciones y tendencias clave:
+
+1. **Distribuciones Desbalanceadas**: Las variables categóricas como 'Propietario', 'Estudiante' y 'Casado' muestran distribuciones desbalanceadas. Por ejemplo, hay una mayor cantidad de no propietarios y no estudiantes en el conjunto.
+
+2. **Ingresos y Límites de Crédito**: Estas variables muestran una correlación fuerte y positiva. Los individuos con mayores ingresos tienden a tener un límite de crédito más alto.
+
+3. **Calificación Crediticia**: Esta variable también muestra una fuerte correlación con el límite de crédito, sugiriendo que un mayor límite de crédito generalmente conlleva una mejor calificación crediticia.
+
+4. **Edad y Número de Tarjetas**: Hay una correlación positiva moderada entre estas variables, lo que podría indicar que las personas mayores suelen tener más tarjetas de crédito.
+
+5. **Valores Atípicos**: Se observaron valores atípicos en las variables de ingresos y límite de crédito, especialmente para los estudiantes. Estos valores podrían requerir una investigación más detallada para entender su origen.
+
+6. **Datos Faltantes**: Un pequeño porcentaje de datos faltantes en variables como ingresos, límite de crédito, calificación y saldo requiere un tratamiento adecuado antes de cualquier análisis posterior.
+
+7. **Distribución Regional**: La distribución de individuos entre las diferentes regiones de Colombia es aproximadamente uniforme, lo que podría facilitar un análisis representativo a nivel nacional.
+
+8. **Estado de Estudiante e Ingresos**: Se observó que los estudiantes generalmente tienen ingresos más bajos, aunque hay excepciones significativas.
+
+En resumen, el conjunto de datos ofrece una rica variedad de variables para explorar y analizar. No obstante, se requiere una limpieza y preprocesamiento adicionales para tratar los valores nulos y atípicos antes de proceder con cualquier modelado o análisis más detallado.
+---

@@ -1,0 +1,31 @@
+@import url(https://fonts.googleapis.com/css?family=Montserrat:700);
+@import url(https://fonts.google.com/specimen/Roboto,700,400italic,700italic);
+
+// fonts
+$font-family-sans-serif: "Roboto", sans-serif !default;
+
+// colors
+$body-bg: #fffbfb !default;
+$body-color: #000000 !default;
+$link-color: #01454f  !default;
+$selection-bg: #01454f !default;
+$input-panel-bg: rgba(233, 236, 239, 0.2) !default;
+
+
+// headings
+$presentation-heading-font: "Montserrat", Impact, sans-serif;
+$presentation-heading-letter-spacing: -0.03em;
+$presentation-heading-color: #01454f !default;
+
+$presentation-font-smaller: 0.6;
+
+// code blocks
+$code-block-border-color: rgba(233, 236, 239, 0.5) !default;
+
+
+
+/*-- scss:rules --*/
+
+.reveal a {
+  line-height: 1.3em;
+}
